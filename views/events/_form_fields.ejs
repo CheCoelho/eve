@@ -1,0 +1,36 @@
+
+<div>
+    <label>Event Name</label>
+    <input type="text" name="event_name" id = "event_name" value = "<% event.event_name %>">
+  </div>
+  <div>
+    <label>Curator</label>
+    <select name="curator">
+    <% curators.forEach(curator => { %>
+      <% if (curator.id === event.curator) { %>
+        <option selected label="<%= curator.curator_name %>">
+      <% } else { %>
+        <option label="<%= curator.curator_name %>" value="<%= curator.id %>">
+      <% } %>
+    <% }) %>
+    </select>
+  </div>
+  <div>
+    <label>Event Date</label>
+    <input type="date" name="event_date"
+         >
+  </div>
+  <div>
+    <label>Description</label>
+    <input type="text" name="description" >   
+</div>
+  </div>
+  <div>
+    <label>Image</label>
+    <input type="file" name="image">
+  </div>
+  <div>
+    <label>Ticket Price</label>
+    
+    <input type="number" name="ticket_price"  >
+  </div>

@@ -1,0 +1,102 @@
+<!-- //unfinished -->
+
+
+
+<form>
+    <h2>Enter new data</h2>
+    
+    <label for = "alias">Alias</label>
+    <input type = "text" name="alias"  />
+    <div class="alias error"></div>
+    <label for = "password">Password</label>
+    <input type = "password" name="password"  />
+    <div class="password error"></div>
+    
+    <button id="submit_update">Submit</button>
+
+    <button id="delete_profile">Delete Profile</button>
+</form>
+
+
+<script>
+    const form  = document.querySelector('form');
+    const submitUpdate = document.getElementById('submit_update')
+    const deleteProfile = document.getElementById('delete_profile')
+
+    
+    const alaisError = document.querySelector('.alias.error');
+    const passwordError = document.querySelector('.password.error');
+    
+
+    submitUpdate.addEventListener('click', async (e) => {
+        e.preventDefault();
+        //reset errors
+
+        
+        passwordError.textContent = '';
+        alaisError.textContent = '';
+        
+            
+        //get the values
+        
+        const alias = form.alias.value;
+        const password = form.password.value;
+        
+
+        try {
+            const res = await fetch('/update_profile', {
+                method: 'PATCH',
+                body: JSON.stringify({ name: name, 
+                    alias: alias, 
+                    password: password}),
+                    headers: { 'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            console.log(data);
+            if (data.errors) {
+                
+                passwordError.textContent = data.errors.alais;
+                alaisError.textContent = data.errors.password;
+                    
+            }
+            else {
+                location.assign('/');
+            }
+            
+        } catch (err) {
+            console.log('err');
+
+        } 
+
+    })
+
+    deleteProfile.addEventListener('click', async (e) => {
+        e.preventDefault();
+        
+
+        
+
+        
+
+        
+
+        try {
+            const res = await fetch('/delete_user', {
+                method: 'DELETE',
+                
+            });
+            const data = await res.json();
+            if (data===200) {
+            
+            location.assign('/');
+            }
+            
+            
+        } catch (err) {
+            console.log(err);
+
+        } 
+
+    })
+</script>
+<%- include('partials/footer'); -%>

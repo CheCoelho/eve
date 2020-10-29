@@ -1,0 +1,65 @@
+
+<form>
+    <h2>Register</h2>
+    <label for = "name">Full Name</label>
+    <input type = "text" name="name"  />
+    <div class="name error"></div>
+    <label for = "password">Password</label>
+    <input type = "password" name="password"  />
+    <div class="password error"></div>
+    <label for = "email">Email</label>
+    <input type = "email" name="email"  />
+    <div class="email error"></div>
+    <button>Submit</button>
+</form>
+
+
+<script>
+    const form  = document.querySelector('form');
+    const nameError = document.querySelector('.name.error');
+    const passwordError = document.querySelector('.password.error');
+    const emailError = document.querySelector('.email.error');
+
+   
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        //reset errors
+
+        nameError.textContent = '';
+        passwordError.textContent = '';
+        emailError.textContent = '';
+            
+        //get the values
+        const name = form.name.value;
+        const password = form.password.value;
+        const email = form.email.value;
+
+        try {
+            const res = await fetch('/register', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    name: name, 
+                    password: password, 
+                    email: email}),
+                    headers: { 'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            console.log(data);
+            if (data.errors) {
+                nameError.textContent = data.errors.name;
+                passwordError.textContent = data.errors.password;
+                emailError.textContent = data.errors.email;
+            }
+            if (data.user) {
+                location.assign('/');
+            }
+            
+        } catch (err) {
+            console.log(err);
+
+        } 
+
+    })
+</script>
+<%- include('partials/footer'); -%>

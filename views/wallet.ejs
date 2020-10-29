@@ -1,0 +1,40 @@
+    <div>
+        <div class='wrapper'>
+            <table class="wallet">
+                <tr class = "row">
+                  <td class="left-side">Spending Capacity</td>
+                  <td class="middle">:</td>
+                  <td class="right-side" ><%= user.spendingCapacity %></td>
+                </tr>
+                <tr class = "row">
+                  <td class="left-side">Credit Limit</td>
+                  <td class="middle">:</td>
+                  <td class="right-side"><%= user.creditLimit %></td>
+                </tr>
+                <tr class = "row">
+                  <td class="left-side">Current Balance</td>
+                  <td class="middle">:</td>
+                  <td class="right-side"><%= user.currentBalance %></td>
+                </tr>
+                <tr class = "row">
+                  <td class="left-side">Total Spent</td>
+                  <td class="middle">:</td>
+                  <td class="right-side"><%= user.totalSpent %></td>
+                </tr>
+                <tr class = "row">
+                    <td class="left-side">Total Earned</td>
+                    <td class="middle">:</td>
+                    <td class="right-side"><%= user.totalEarned %></td>
+                  </tr>
+                  <tr class = "row">
+                    <td class="left-side">Participation</td>
+                    <td class="middle">:</td>
+                    <td class="right-side"><%= user.participation %></td>
+                  </tr>
+                
+              </table>
+        </div>
+        
+    </div>
+    
+    <%- include('partials/footer'); -%>

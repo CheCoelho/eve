@@ -1,0 +1,27 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eve</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <nav>
+        <h1><a href = "/">eve</a></h1>
+        <ul>
+            <% if (locals.user) {  %>
+                <li><a href="/curators/new" class="main_links">Become a Curator</a></li>
+                <li><a href="/curators" class="main_links">Curators</a></li>
+                <li><a href="/events/new" class="main_links">Create Event</a></li>
+                <li><a href="/events" class="main_links">Events</a></li>
+                <li class = welcome_message>Welcome, <%= user.name %></li>
+                <li><a href="/profile" class="btn">Profile</a></li>
+            <% } else { %>
+                <li><a href="/login" class="btn">Log in</a></li>
+                <li><a href="/register" class="btn">Register</a></li>
+            <% } %>
+        </ul>
+    </nav>
+    
+ 

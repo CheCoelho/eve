@@ -1,0 +1,11 @@
+<h2>Search Curators</h2>>
+
+<form action="/curators" method="GET">
+    <label>Name</label>
+    <input type="text" name="curator_name" value="<%= searchOptions.curator_name %>">
+    <button type="submit">Search</button>
+  </form>
+  <br>
+  <% curators.forEach(curator => { %>
+    <div><%= curator.curator_name %></div>
+  <% }) %>

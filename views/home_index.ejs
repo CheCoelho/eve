@@ -1,0 +1,18 @@
+
+
+
+    <div>
+        <div class='home_wrapper'>
+          <ul>
+            <% if (user) {  %>
+            <li><a href="wallet" class="main-buttons_1">Wallet</a></li>
+            <li><a href="/transact" class="main-buttons_2">Transact</a></li>
+            <li><a href="/ledger" class="main-buttons_3">Ledger</a></li>
+            <% } else { %>
+              <% } %>
+        </ul> 
+        </div>
+        
+    </div>
+    
+    <%- include('partials/footer'); -%>
