@@ -1,21 +1,23 @@
 const User = require('../model/user');
-
+const Curator = require('../model/curator')
 const Event = require('../model/event')
+const fs = require('fs')
 
 const jwt = require('jsonwebtoken');
-const Curator = require('../model/curator');
-
-const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-const path = require('path')
-const uploadPath = path.join('public', Event.coverImageBasePath)
 const multer = require('multer')
-const upload = multer({
-    dest: uploadPath,
-    fileFilter: (req, file, callback) => {
-        callback(null, imageMimeTypes.includes(file.mimetype))
-    }
+const path = require('path')
 
+const uploadPath = path.join('public', Event.eventImageBasePath)
+const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
+const upload = multer({
+  dest: uploadPath,
+  fileFilter: (req, file, callback) => {
+    callback(null, imageMimeTypes.includes(file.mimetype))
+  }
 })
+
+
+
 
 
 
@@ -59,9 +61,25 @@ const handleErrors = (err) => {
 
 
 //Get all events
-module.exports.events_get = (req, res) => {
+module.exports.events_get = async (req, res) => {
+    let query = Event.find()
+    if (req.query.event_name != null && req.query.event_name != '') {
+        query = query.regex('event_name', new RegExp(req.query.event_name, 'i'))
+      }
+      if (req.query.event_date != null && req.query.event_date != '') {
+        query = query.regex('event_date', new RegExp(req.query.event_date, 'i'))      }
+    try {
+        const events = await query.exec()
+        res.render('events/index', {
+            events: events,
+            searchOptions : req.query
+        })
+
+    } catch {
+        res.redirect('/')
+    }
     
-    res.send('All Events')
+    
 
 }
 
@@ -74,11 +92,9 @@ module.exports.newEvent_get = async (req, res) => {
 
 
 //Create event
-module.exports.events_post =  async (req, res) => {
-   upload.single('image')
-    console.log('hi')
+module.exports.events_post = async (req, res) => {
+   
     const fileName = req.file != null ? req.file.filename : null
-    console.log('hi')
 
    const {
        event_name,
@@ -111,10 +127,37 @@ module.exports.events_post =  async (req, res) => {
             res.redirect('events')
             
          } catch (err) {
-             const errors = handleErrors(err);
+            if (book.coverImageName != null) {
+                removeEventImage(book.coverImageName)
+              }
+            //  const errors = handleErrors(err);
+             renderNewPage(res, event, true)
              
          };
 
+}
+
+function removeEventImage(fileName) {
+    fs.unlink(path.join(uploadPath, fileName), err => {
+      if (err) console.error(err)
+    })
+  }
+
+async function renderNewPage(res, event, hasError = false) {
+
+    try {
+        const curators = await Curator.find({})
+        const params = {
+            curators: curators,
+            event: event
+        }
+        if (hasError) params.errorMessage = 'Error Creating Event'
+        res.render('events/new', params)
+
+    } catch {
+        res.redirect('/events')
+
+    }
 }
 
 // const { event_name,
@@ -193,19 +236,3 @@ module.exports.events_post =  async (req, res) => {
 // }
 
     
-async function renderNewPage(res, event, hasError = false) {
-
-    try {
-        const curators = await Curator.find({})
-        const params = {
-            curators: curators,
-            event: event
-        }
-        if (hasError) params.errorMessage = 'Error Creating Event'
-        res.render('events/new', params)
-
-    } catch {
-        res.redirect('/events')
-
-    }
-}

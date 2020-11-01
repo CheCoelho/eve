@@ -1,0 +1,19 @@
+<h2>Search Events</h2>
+
+<form action="/events" method="GET">
+  <div><label>Name</label>
+    <input type="text" name="event_name" value="<%= searchOptions.event_name %>">
+    <button type="submit">Search</button>
+  </div>
+  <div><label>Event Date</label>
+    <input type="date" name="event_date" value="<%= searchOptions.event_date %>">
+    <button type="submit">Search</button>
+  </div>
+  </form>
+  <br>
+  <div>
+  <% events.forEach(event => { %>
+    <img height = "150" width = "100" src = "<%= event.event_image_name %>">
+    <div><%= event.event_name %></div>
+  <% }) %>
+</div>

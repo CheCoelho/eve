@@ -22,7 +22,7 @@ const { requireAuth, checkUser, checkTransactions } = require('./middleware/auth
 
 
 //Connect to Mongo DB
-const dbURI = 'mongodb+srv://eve_user:TqzuDW3xG9CeuX1r@eve-cluster.ehctd.mongodb.net/eve-db?retryWrites=true&w=majority';
+const dbURI = process.env.dbURI;
 
 mongoose.connect(dbURI, { 
     useNewUrlParser: true,
@@ -88,16 +88,15 @@ app.use(cors());
 const authRoutes = require('./routes/authRoutes')
 const curatorRoutes = require('./routes/curatorRoutes')
 const eventRoutes = require('./routes/eventRoutes')
+const homeRoutes= require('./routes/homeRoutes')
 
 
 
 //Check user data on all routes
 app.get('*', checkUser)
 
-app.get('/', (req, res) => res.render('home_index.ejs'));
-// app.get('/wallet', requireAuth, (req, res) => res.render('wallet.ejs'))
-// app.get('/curators/new', requireAuth, (req, res) => res.render('curators/new.ejs'))
-app.get('/transact', requireAuth, (req, res) => res.render('transact.ejs'))
+// app.get('/', (req, res) => res.render('home_index.ejs'));
+
 // app.get('/curators', requireAuth, (req, res) => res.render('curators/index.ejs'))
 app.get('/profile', requireAuth, (req, res) => res.render('profile.ejs'))
 app.get('/update_profile', requireAuth, (req, res) => res.render('update_profile.ejs'))  
@@ -115,6 +114,7 @@ app.get('/ledger', requireAuth, (req, res) => {
 app.use(authRoutes);
 app.use(curatorRoutes);
 app.use(eventRoutes);
+app.use(homeRoutes);
 
 
 

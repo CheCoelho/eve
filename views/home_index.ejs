@@ -5,9 +5,13 @@
         <div class='home_wrapper'>
           <ul>
             <% if (user) {  %>
-            <li><a href="wallet" class="main-buttons_1">Wallet</a></li>
-            <li><a href="/transact" class="main-buttons_2">Transact</a></li>
-            <li><a href="/ledger" class="main-buttons_3">Ledger</a></li>
+            <h2>Recently Added</h2>
+            <div>
+              <% events.forEach(event => { %>
+                <img height = "150" width = "100" src = "<%= event.event_image_name %>">
+                <div><%= event.event_name %></div>
+              <% }) %>
+            </div>
             <% } else { %>
               <% } %>
         </ul> 
