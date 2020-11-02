@@ -70,7 +70,7 @@ app.set('layout', 'layouts/layout')
 
 
 // The body-parser middleware to parse form data 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: false }));
 app.use(bodyParser.json());
 
 app.use(expressLayouts);

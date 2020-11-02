@@ -1,4 +1,4 @@
-<h2>Search Curators</h2>>
+<h2>Search Curators</h2>
 
 <form action="/curators" method="GET">
     <label>Name</label>
@@ -7,5 +7,12 @@
   </form>
   <br>
   <% curators.forEach(curator => { %>
-    <div><%= curator.curator_name %></div>
+    <div>
+      <%= curator.curator_name %>
+      
+    </div>
+    <a href = "/curators/<%= curator.id %>"> View</a>
+   
+  
+    <br></br>
   <% }) %>

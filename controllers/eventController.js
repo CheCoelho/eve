@@ -1,20 +1,11 @@
 const User = require('../model/user');
 const Curator = require('../model/curator')
 const Event = require('../model/event')
-const fs = require('fs')
 
 const jwt = require('jsonwebtoken');
-const multer = require('multer')
-const path = require('path')
 
-const uploadPath = path.join('public', Event.eventImageBasePath)
+
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-const upload = multer({
-  dest: uploadPath,
-  fileFilter: (req, file, callback) => {
-    callback(null, imageMimeTypes.includes(file.mimetype))
-  }
-})
 
 
 
@@ -94,42 +85,40 @@ module.exports.newEvent_get = async (req, res) => {
 //Create event
 module.exports.events_post = async (req, res) => {
    
-    const fileName = req.file != null ? req.file.filename : null
 
-   const {
-       event_name,
-       description,
-       curator,
-       event_date,
-       ticket_price
+   const event = new Event ({
+    event_name: req.body.event_name,
+    description: req.body.description,
+    curatorcurator: req.body.curator,
+    event_date: req.body.event_date,
+    ticket_price: req.body.ticket_price
        
-   } = req.body
-   const event_image_name = fileName
+   }) 
+   saveImage(event, req.body.cover)
+   console.log(event.description)
+    console.log(event.event_name)
+
+   
+
+   
 
 
          try {
-
-            const event = await Event.create({ 
-                event_name,
-                description,
-                curator,
-                event_date,
-                ticket_price,
-                event_image_name 
-                
-            })
+            console.log("1")
+            
+            const newEvent = await event.save()
+            console.log(event.description)
             console.log(event.event_name)
                 
              
              
              
-            // res.status(201).json( {Curator: Curator._id });
+            
             res.redirect('events')
             
          } catch (err) {
-            if (book.coverImageName != null) {
-                removeEventImage(book.coverImageName)
-              }
+             console.log(err)
+           
             //  const errors = handleErrors(err);
              renderNewPage(res, event, true)
              
@@ -137,11 +126,7 @@ module.exports.events_post = async (req, res) => {
 
 }
 
-function removeEventImage(fileName) {
-    fs.unlink(path.join(uploadPath, fileName), err => {
-      if (err) console.error(err)
-    })
-  }
+
 
 async function renderNewPage(res, event, hasError = false) {
 
@@ -160,79 +145,17 @@ async function renderNewPage(res, event, hasError = false) {
     }
 }
 
-// const { event_name,
-//     description,
-//     curator,
-//     event_date,
-//     ticket_price,
-//     event_image_name
 
-    
-//      } = req.body;
-//      try {
-
-//         const event = await Event.create({ event_name,
-//             description,
-//             curator,
-//             event_date,
-//             ticket_price,
-//             event_image_name })
-            
-         
-         
-         
-//         // res.status(201).json( {Curator: Curator._id });
-//         res.redirect('events')
-        
-//      } catch (err) {
-//          const errors = handleErrors(err);
-         
-//      };
-
-
-// upload.single('image')
-//     console.log('hi')
-//     const fileName = req.file != null ? req.file.filename : null
-//     const event =  Event.create({
-//         event_name: req.body.event_name,
-//         description: req.body.description,
-//         curator: req.body.curator,
-//         event_date: req.body.event_date,
-//         ticket_price: req.body.ticket_price,
-//         event_image_name: fileName
-        
-        
-        
-//     })
-// console.log(event.event_name)
-//     try {
-//         const newEvent = await event.save()
-//          // res.status(201).json( {Curator: Curator._id });
-//          console.log('hello')
-        
-//          res.redirect('events')
-//         } catch  {
-//             console.log('1')
-
-//             try {
-//                 console.log('1')
-
-//                 const curators = await Curator.find({})
-//                 const params = {
-//                     curators: curators,
-//                     event: event
-//                 }
-//                 if (hasError) params.errorMessage = 'Error Creating Event'
-//                 res.render('events/new', params)
-        
-//             } catch {
-//                 console.log('1')
-
-//                 res.redirect('/events')
-        
-//             }
-//     }
-
-// }
-
-    
+function saveImage(event, coverEncoded) {
+    if (imageEncoded == null) {
+        console.log('fail')
+        return
+    } 
+    const cover = JSON.parse(coverEncoded);
+    if (cover != null && imageMimeTypes.includes(cover.type)) {
+        event.event_image = new Buffer.from(cover.data, 'base64')
+        event.event_image_type = cover.type
+    } else {
+        console.log("error with type")
+    }
+}

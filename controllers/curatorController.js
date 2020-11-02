@@ -101,3 +101,26 @@ module.exports.curators_post = async (req, res) => {
 
 };
 
+module.exports.curatorId_get = async (req, res) => {
+    res.send('Show Curator' + req.params.id)
+
+
+};
+
+module.exports.curatorIdEdit_get = async (req, res) => {
+    res.send('Edit Curator' + req.params.id)
+
+
+};
+
+module.exports.curatorIdEdit_put = async (req, res) => {
+    res.send('Update Curator' + req.params.id)
+
+
+};
+
+module.exports.curatorIdEdit_delete = async (req, res) => {
+    res.send('Delete Curator' + req.params.id)
+
+    
+};
