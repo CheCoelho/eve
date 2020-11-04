@@ -1,10 +1,10 @@
 const User = require('../model/user');
-const Transaction = require('../model/curator');
+const Curator = require('../model/curator');
 
 const jwt = require('jsonwebtoken');
 
-const user = require('../model/user');
 
+const requireAuth = require('../middleware/authMiddleware')
 
 
 
@@ -135,124 +135,24 @@ module.exports.logout_get = (req, res) => {
     res.cookie('jwt', '', { maxAge: 1 })                // replaces jwt with another that expires in 1 ms, as a work around to directly deleting the jw
     res.redirect('/');
 }
-
-module.exports.profile_get = (req, res) => {
+// //Show profile page
+// module.exports.profile_get = (req, res) => {
     
-    res.redirect('/profile');
-}
+//     res.render('profile.ejs');
+// }
 
 
 
 
-//show transaction page
-module.exports.transact_get = (req, res) => {
-    res.render('transact');
-
-}
-
-//make payment
-module.exports.transact_patch =  async (req, res) => {
-    const { alias, amount, reference } = req.body;
-    const payment = parseInt(amount, 10); 
-    const token = req.cookies.jwt //get jwt from cookies
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) //get user ID from token in jwt
-    const userId = decodedToken.id //extract user ID
-
-    try {
-    const beneficiary = await User.transact(alias); //send credits to the beneficiary 
-    const user = await User.findById(userId);
-
-    
-    
-
-     if (payment <= user.spendingCapacity ) {
-             console.log(user.spendingCapacity  -payment)
-    
-    try { 
-
-        beneficiary.currentBalance += payment;
-        beneficiary.totalEarned += payment;
-        beneficiary.participation += payment;
-        beneficiary.spendingCapacity += payment;
-
-        if (beneficiary.peers.includes(user.name)) {
-            
-        } else {
-            beneficiary.peers.push(user.name)
-        };
-        
-        beneficiary.transaction_count += 1; 
-        await beneficiary.save()
-
-        user.currentBalance -= payment;
-        user.totalSpent += payment;
-        user.participation += payment;
-        user.spendingCapacity -= payment;
-
-        if (user.peers.includes(beneficiary.name)) {            //if user does not exist, then add it to the user and beneficieries list of peers
-            
-        } else {
-            user.peers.push(beneficiary.name)
-        }
-
-        
-        //create transaction in db
-        const payer = user.name;
-        const receiver = beneficiary.name;
-        const payment_amount = payment;
-        const note = reference;
-
-        try {
-
-           await Transaction.create({ 
-                payer,
-                receiver,
-                payment_amount,
-                note }) 
-
-         } catch (err) {
-             const errors = handleErrors(err);
-             
-         }
-
-        user.transaction_count += 1; 
-
-        await user.save()
-       
-        console.log(beneficiary); //for development
-        console.log(user);  //for development
-        
-        res.status(200).json({ beneficiary: beneficiary._id });
-        // } else {
-        //     return
-        // }
-    } catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
-    }
-    console.log
-    }
-else {
-    res.send("Insufficient spending capacity")
-    // res.redirect('/transact')
-    }
-
-    } catch (err) {
-        const errors = handleErrors(err);
-        res.status(400).json({ errors });
-        
-    }
-}
-
-//Show update profile page
-module.exports.update_get =  async (req, res) => {
-    try {
-    //   const user = await User.findById(req.params.id)
-      res.render('update_profile', { user: user })
-    } catch {
-      res.redirect('/')
-    }
-  }
+// //Show update profile page
+// module.exports.update_get =  async (req, res) => {
+//     try {
+//     //   const user = await User.findById(req.params.id)
+//       res.render('update_profile', { user: user })
+//     } catch {
+//       res.redirect('/')
+//     }
+//   }
   
 
 //Update Profile
@@ -301,38 +201,16 @@ module.exports.update_patch =  async  (req, res) => {
 
 module.exports.user_delete = async (req, res) => {
     
-    
     const token = req.cookies.jwt //get jwt from cookies
-    
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) //get user ID from token in jwt
-
     try {
-
        const userId = decodedToken.id
        const user = await User.findByIdAndRemove(userId)
        res.status(200).json(200)
 
-       
-
     } catch {
 
     }
-
-    
-    
-     
  }
 
-module.exports.ledger_get = async (req, res) => {
 
-    const userTransactions = await User.get_transactions
-    res.send(userTransactions)
-     
- }
-
-module.exports.ledger_post = async (req, res) => {
-
-   const userTransactions = await User.get_transactions
-   res.send(userTransactions)
-    
-}

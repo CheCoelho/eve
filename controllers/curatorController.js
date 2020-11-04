@@ -1,5 +1,8 @@
 const User = require('../model/user');
 
+const Event = require('../model/event');
+
+
 const Curator = require('../model/curator')
 
 const jwt = require('jsonwebtoken');
@@ -102,8 +105,18 @@ module.exports.curators_post = async (req, res) => {
 };
 
 module.exports.curatorId_get = async (req, res) => {
-    res.send('Show Curator' + req.params.id)
 
+    try {
+         const curator = await Curator.findById(req.params.id)
+         const events = await Event.find({ curator: curator._id}).limit(6).exec()
+         res.render('curators/show', {
+             curator: curator,
+             eventsByCurator: events
+         } ) 
+    } catch  {
+        res.redirect('/')
+    }
+    
 
 };
 

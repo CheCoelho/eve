@@ -1,2 +1,8 @@
 <h2><%= curator.curator_name %></h2>
-<%- include
+
+<% if (eventsByCurator.length > 0) { %>
+  <h2>Events By Curator</h2>
+  <% eventsByCurator.forEach(event => { %>
+    <img height="540" width="960" src="<%= event.coverImagePath %>">
+  <% }) %>
+<% } %> 

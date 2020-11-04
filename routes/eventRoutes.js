@@ -12,16 +12,19 @@ const eventController = require('../controllers/eventController')
 
 
 
-//get all event curators
-router.get('/events', eventController.events_get);
+//get all events
+// router.get('/events', eventController.events_get);
 
 
-//New curator route
-router.get('/events/new', eventController.newEvent_get);
+//New event route
+// router.get('/events/new', eventController.newEvent_get);
 
 
-//Create event curator
+//Create event 
 router.post('/events', eventController.events_post)
+
+//Get specific event
+router.get('/event/:id', eventController.event_get)
 
 
 

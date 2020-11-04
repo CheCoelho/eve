@@ -51,28 +51,28 @@ const handleErrors = (err) => {
 
 
 
-//Get all events
-module.exports.events_get = async (req, res) => {
-    let query = Event.find()
-    if (req.query.event_name != null && req.query.event_name != '') {
-        query = query.regex('event_name', new RegExp(req.query.event_name, 'i'))
-      }
-      if (req.query.event_date != null && req.query.event_date != '') {
-        query = query.regex('event_date', new RegExp(req.query.event_date, 'i'))      }
-    try {
-        const events = await query.exec()
-        res.render('events/index', {
-            events: events,
-            searchOptions : req.query
-        })
+// //Get all events
+// module.exports.events_get = async (req, res) => {
+//     let query = Event.find()
+//     if (req.query.event_name != null && req.query.event_name != '') {
+//         query = query.regex('event_name', new RegExp(req.query.event_name, 'i'))
+//       }
+//       if (req.query.event_date != null && req.query.event_date != '') {
+//         query = query.regex('event_date', new RegExp(req.query.event_date, 'i'))      }
+//     try {
+//         const events = await query.exec()
+//         res.render('events/index', {
+//             events: events,
+//             searchOptions : req.query
+//         })
 
-    } catch {
-        res.redirect('/')
-    }
+//     } catch {
+//         res.redirect('/')
+//     }
     
     
 
-}
+// }
 
 //New event
 module.exports.newEvent_get = async (req, res) => {
@@ -89,13 +89,13 @@ module.exports.events_post = async (req, res) => {
    const event = new Event ({
     event_name: req.body.event_name,
     description: req.body.description,
-    curatorcurator: req.body.curator,
+    curator: req.body.curator,
     event_date: req.body.event_date,
     ticket_price: req.body.ticket_price
        
    }) 
    saveImage(event, req.body.cover)
-   console.log(event.description)
+   console.log(event.curator)
     console.log(event.event_name)
 
    
@@ -127,6 +127,17 @@ module.exports.events_post = async (req, res) => {
 }
 
 
+module.exports.event_get= async (req, res) => {
+    try {
+        const event = await Event.findById(req.params.id)
+        .populate('curator')
+        .exec();
+        console.log(event)
+        res.render('events/show', { event: event })
+    } catch {
+        res.redirect('/')
+    }
+}
 
 async function renderNewPage(res, event, hasError = false) {
 
@@ -147,7 +158,7 @@ async function renderNewPage(res, event, hasError = false) {
 
 
 function saveImage(event, coverEncoded) {
-    if (imageEncoded == null) {
+    if (coverEncoded == null) {
         console.log('fail')
         return
     } 

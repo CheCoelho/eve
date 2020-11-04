@@ -13,7 +13,10 @@
   <br>
   <div>
   <% events.forEach(event => { %>
+    <a href="/events/<%= event.id %>">
     <img height = "540" width = "960" src = "<%= event.coverImagePath %>">
+  </a>
     <div><%= event.event_name %></div>
+  
   <% }) %>
-</div>
+</div> 

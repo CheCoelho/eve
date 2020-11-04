@@ -95,26 +95,59 @@ const homeRoutes= require('./routes/homeRoutes')
 //Check user data on all routes
 app.get('*', checkUser)
 
-// app.get('/', (req, res) => res.render('home_index.ejs'));
-
-// app.get('/curators', requireAuth, (req, res) => res.render('curators/index.ejs'))
-app.get('/profile', requireAuth, (req, res) => res.render('profile.ejs'))
-app.get('/update_profile', requireAuth, (req, res) => res.render('update_profile.ejs'))  
-
-//get user specific transaction data for ledger
-app.get('/ledger', requireAuth, (req, res) => {
-    const transaction_collection = db.collection('transactions')
-    transaction_collection.find().toArray(function(err, transaction_list) {
-        res.render('ledger.ejs', { 'transactions': transaction_list })
-    })
-})
-
-
 //enable routes
 app.use(authRoutes);
 app.use(curatorRoutes);
 app.use(eventRoutes);
 app.use(homeRoutes);
+
+
+
+//Auth get Routes
+
+//Show profile page
+app.get('/profile', requireAuth, (req, res) => {
+    
+    res.render('profile.ejs');
+})
+
+//Show update profile page
+app.get('/update_profile', requireAuth, async (req, res) => {
+    try {
+    //   const user = await User.findById(req.params.id)
+      res.render('update_profile', { user: user })
+    } catch {
+      res.redirect('/')
+    }
+  })
+
+//Event get routes
+
+//Get all events
+  app.get('/events', requireAuth, async (req, res) => {
+    let query = Event.find()
+    if (req.query.event_name != null && req.query.event_name != '') {
+        query = query.regex('event_name', new RegExp(req.query.event_name, 'i'))
+      }
+      if (req.query.event_date != null && req.query.event_date != '') {
+        query = query.regex('event_date', new RegExp(req.query.event_date, 'i'))      }
+    try {
+        const events = await query.exec()
+        res.render('events/index', {
+            events: events,
+            searchOptions : req.query
+        })
+
+    } catch {
+        res.redirect('/')
+    }
+})
+
+//New event
+app.get('/events/new', requireAuth, async (req, res) => {
+    renderNewPage(res, new Event())
+})
+
 
 
 
