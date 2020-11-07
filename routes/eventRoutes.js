@@ -23,8 +23,8 @@ const eventController = require('../controllers/eventController')
 //Create event 
 router.post('/events', eventController.events_post)
 
-//Get specific event
-router.get('/event/:id', eventController.event_get)
+// //Get specific event
+// router.get('/event/:id', eventController.event_get)
 
 
 

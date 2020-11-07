@@ -49,11 +49,11 @@ app.use (cookieParser());
 // Encryption
 const bcrypt = require('bcrypt');
 const { collection } = require('./model/user');
-const user = require('./model/user');
+const User = require('./model/user');
 
-const curator = require('./model/curator');
+const Curator = require('./model/curator');
 
-const event = require('./model/event')
+const Event = require('./model/event')
 
 
 // app
@@ -88,7 +88,8 @@ app.use(cors());
 const authRoutes = require('./routes/authRoutes')
 const curatorRoutes = require('./routes/curatorRoutes')
 const eventRoutes = require('./routes/eventRoutes')
-const homeRoutes= require('./routes/homeRoutes')
+const homeRoutes= require('./routes/homeRoutes');
+const user = require('./model/user');
 
 
 
@@ -115,6 +116,7 @@ app.get('/profile', requireAuth, (req, res) => {
 app.get('/update_profile', requireAuth, async (req, res) => {
     try {
     //   const user = await User.findById(req.params.id)
+    
       res.render('update_profile', { user: user })
     } catch {
       res.redirect('/')
@@ -143,14 +145,47 @@ app.get('/update_profile', requireAuth, async (req, res) => {
     }
 })
 
+
 //New event
 app.get('/events/new', requireAuth, async (req, res) => {
     renderNewPage(res, new Event())
 })
 
+//Get specific event
+app.get('/event/:id', requireAuth, async (req, res) => {
+    try {
+        console.log(req.params.id)
+        const event = await Event.findById(req.params.id)
+        .populate('curator')
+        .exec();
+        console.log(event)
+        res.render('events/show', { event: event })
+    } catch {
+        res.redirect('/')
+    }
+
+})
 
 
+//functions used
 
+//used for event creation
+async function renderNewPage(res, event, hasError = false) {
+
+    try {
+        const curators = await Curator.find({})
+        const params = {
+            curators: curators,
+            event: event
+        }
+        if (hasError) params.errorMessage = 'Error Creating Event'
+        res.render('events/new', params)
+
+    } catch {
+        res.redirect('/events')
+
+    }
+}
 
 
 

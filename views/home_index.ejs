@@ -6,10 +6,13 @@
           <ul>
             <% if (user) {  %>
             <h2>Recently Added</h2>
+            <br>
             <div>
               <% events.forEach(event => { %>
                 <img height = "540" width = "960" src = "<%= event.coverImagePath  %>">
-                <div><%= event.event_name %></div>
+                <div><%= event.event_name  %></div>
+                
+                <br>
               <% }) %>
             </div>
             <% } else { %>
