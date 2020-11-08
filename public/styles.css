@@ -366,3 +366,8 @@ white-space: nowrap;
   text-align: left;
 }
 
+/* Google Maps */
+#map {
+  height: 400px;
+  width: 100%;
+}

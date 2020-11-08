@@ -152,13 +152,11 @@ app.get('/events/new', requireAuth, async (req, res) => {
 })
 
 //Get specific event
-app.get('/event/:id', requireAuth, async (req, res) => {
+app.get('/events/:id', requireAuth, async (req, res) => {
     try {
-        console.log(req.params.id)
         const event = await Event.findById(req.params.id)
         .populate('curator')
         .exec();
-        console.log(event)
         res.render('events/show', { event: event })
     } catch {
         res.redirect('/')

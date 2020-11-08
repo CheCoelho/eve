@@ -15,7 +15,7 @@ const requireAuth = (req, res, next) => {
             if (err) {
                 console.log(err.message)
             } else {
-                console.log(decodedToken);
+                console.log("Auth Successful")
                 next();
             }
         })

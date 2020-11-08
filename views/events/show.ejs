@@ -1,1 +1,53 @@
-<h2><%= event.event_name %> </h2>h2?</h2>
+<% var date1 = event.event_date %>
+<% var date2 = new Date() %>
+<%var difference = date1.getTime() - date2.getTime(); %>
+<%var days = Math.ceil(difference / (1000 * 3600 * 24)); %>
+<%if (days < 0) { %>
+<%var days = "Event has happened"%>
+<% } else if (days === 0) { var days = "Happening Today" }%>
+
+
+
+
+<h2><%= event.event_name %> </h2></h2>
+<div>Days to event: <%= days %></div>
+<br>
+<img height = "540" width = "960" src = "<%= event.coverImagePath %>">
+  <div>Curator: <%= event.curator.curator_name %></div>
+  <div>Date: <%= event.event_date.toDateString() %></div>
+  <div>Ticket Price: R<%= event.ticket_price %></div>
+  <div>Description: <%= event.description %></div>
+  <div id="map"></div>
+
+  <script>
+    function initMap() {
+      var lat =  campground.lat ;
+      var lng =  campground.lng ;
+      var center = {lat: lat, lng: lng };
+      var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 8,
+          center: center,
+          scrollwheel: false
+      });
+      var contentString = `
+        <strong><%= campground.name %><br />
+        <%= campground.location %></strong>
+        <p><%= campground.description %></p>
+      `
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+      var marker = new google.maps.Marker({
+          position: center,
+          map: map
+      });
+      marker.addListener('click', function() {
+        infowindow.open(map, marker);
+      });
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyABLuSevowaBz59qHP7T3tPjtuV6WM8Ca0&callback=initMap"></script>
+
+    
+
+
