@@ -1,10 +1,12 @@
 const User = require('../model/user');
 const Curator = require('../model/curator');
+const Event = require('../model/event');
 
 const jwt = require('jsonwebtoken');
 
 
-const requireAuth = require('../middleware/authMiddleware')
+const requireAuth = require('../middleware/authMiddleware');
+const user = require('../model/user');
 
 
 
@@ -78,29 +80,19 @@ module.exports.login_get = (req, res) => {
 //register user and log them in
 module.exports.register_post = async (req, res) => {
     
-    const { name, 
-        alias, 
+    const { 
+        name, 
         password, 
         email, 
-        creditLimit, 
-        currentBalance, 
-        totalSpent, 
-        totalEarned, 
-        participation, 
-        spendingCapacity } = req.body;
+        } = req.body;
    
     try {
 
-       const user = await User.create({ name, 
-        alias, 
+       const user = await User.create({ 
+        name, 
         password, 
         email, 
-        creditLimit, 
-        currentBalance, 
-        totalSpent, 
-        totalEarned, 
-        participation, 
-        spendingCapacity })
+         })
         const token = createToken(user._id);
         res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000})
         
@@ -212,5 +204,4 @@ module.exports.user_delete = async (req, res) => {
 
     }
  }
-
 

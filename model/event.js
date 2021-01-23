@@ -46,6 +46,31 @@ const eventSchema = new mongoose.Schema({
     event_image_type: {
         type: String,
         // required: true
+    },
+
+    location: {
+        type: String
+    },
+
+    latitude: {
+        type: Number
+    },
+
+    longitude: {
+        type: Number
+    },
+
+    interested_users: {
+        type: Array,
+        default: []
+
+    },
+    
+    attending_users: {
+        type: Array,
+        default: []
+
+
     }
 
 }, {timestamps: true});

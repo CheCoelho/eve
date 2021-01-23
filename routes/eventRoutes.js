@@ -26,6 +26,9 @@ router.post('/events', eventController.events_post)
 // //Get specific event
 // router.get('/event/:id', eventController.event_get)
 
+//User interested in event
+router.post(':id/interested', eventController.interested_patch);
+
 
 
 module.exports = router;

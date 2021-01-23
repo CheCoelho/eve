@@ -51,28 +51,7 @@ const handleErrors = (err) => {
 
 
 
-// //Get all events
-// module.exports.events_get = async (req, res) => {
-//     let query = Event.find()
-//     if (req.query.event_name != null && req.query.event_name != '') {
-//         query = query.regex('event_name', new RegExp(req.query.event_name, 'i'))
-//       }
-//       if (req.query.event_date != null && req.query.event_date != '') {
-//         query = query.regex('event_date', new RegExp(req.query.event_date, 'i'))      }
-//     try {
-//         const events = await query.exec()
-//         res.render('events/index', {
-//             events: events,
-//             searchOptions : req.query
-//         })
 
-//     } catch {
-//         res.redirect('/')
-//     }
-    
-    
-
-// }
 
 //New event
 module.exports.newEvent_get = async (req, res) => {
@@ -86,34 +65,26 @@ module.exports.newEvent_get = async (req, res) => {
 module.exports.events_post = async (req, res) => {
    
 
+
+   
+
+        
    const event = new Event ({
     event_name: req.body.event_name,
     description: req.body.description,
     curator: req.body.curator,
     event_date: req.body.event_date,
-    ticket_price: req.body.ticket_price
-       
+    ticket_price: req.body.ticket_price,
+   
    }) 
+
+
    saveImage(event, req.body.cover)
-   console.log(event.curator)
-    console.log(event.event_name)
-
-   
-
-   
 
 
-         try {
-            console.log("1")
-            
+         try {            
             const newEvent = await event.save()
-            console.log(event.description)
-            console.log(event.event_name)
-                
-             
-             
-             
-            
+          
             res.redirect('events')
             
          } catch (err) {
@@ -138,6 +109,36 @@ module.exports.event_get= async (req, res) => {
         res.redirect('/')
     }
 }
+
+
+
+module.exports.interested_patch = async (req, res) => {
+
+    const token = req.cookies.jwt //get jwt from cookies
+    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET) //get user ID from token in jwt
+    const userId = decodedToken.id //extract user ID
+    
+    try {
+        const user = await User.findById(userId)
+        console.log(user)
+    //     const event = await Event.findById(req.params.id)
+    //    console.log(event)
+    //     event.interested_users.push()
+    //    await event.save()
+    //    res.status(201);
+
+    } catch (err) {
+        console.log(err)
+        res.send(err)
+    }
+    
+ }
+
+
+
+
+
+//Used Functions
 
 async function renderNewPage(res, event, hasError = false) {
 
